@@ -41,29 +41,22 @@ namespace CodeLuau
 
             bool approved = false;
 
-            if (Sessions.Count() != 0)
+            foreach (var session in Sessions)
             {
-                foreach (var session in Sessions)
+                var ot = new List<string>() { "Cobol", "Punch Cards", "Commodore", "VBScript" };
+                foreach (var tech in ot)
                 {
-                    var ot = new List<string>() { "Cobol", "Punch Cards", "Commodore", "VBScript" };
-                    foreach (var tech in ot)
+                    if (session.Title.Contains(tech) || session.Description.Contains(tech))
                     {
-                        if (session.Title.Contains(tech) || session.Description.Contains(tech))
-                        {
-                            session.Approved = false;
-                            break;
-                        }
-                        else
-                        {
-                            session.Approved = true;
-                            approved = true;
-                        }
+                        session.Approved = false;
+                        break;
+                    }
+                    else
+                    {
+                        session.Approved = true;
+                        approved = true;
                     }
                 }
-            }
-            else
-            {
-                return new RegisterResponse(RegisterError.NoSessionsProvided);
             }
 
             if (approved)
@@ -143,6 +136,7 @@ namespace CodeLuau
             if (string.IsNullOrWhiteSpace(FirstName)) return RegisterError.FirstNameRequired;
             if (string.IsNullOrWhiteSpace(LastName)) return RegisterError.LastNameRequired;
             if (string.IsNullOrWhiteSpace(Email)) return RegisterError.EmailRequired;
+            if (!Sessions.Any()) return RegisterError.NoSessionsProvided;
 
             return null;
         }
